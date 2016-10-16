@@ -39,6 +39,9 @@ function parse( read ){
 
 			pos = 0;
 
+			if (typeof data !== 'string')
+				data = data.toString();
+
 			while ((ni = data.indexOf('\n', pos)) !== -1) {
 				tail = data.slice(pos, data.charCodeAt(ni - 1) === COMMA
 					? ni - 1

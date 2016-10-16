@@ -36,3 +36,15 @@ var c = [ { name: 'Juliet', age: 22 }, { name: 'Romeo', age: 23 } ];
 		);
 	});
 });
+
+test(function( t ){
+	t.plan(1);
+
+	pull(
+		pull.values([ new Buffer(JSON.stringify('Hidden string'), 'utf8') ]),
+		parse,
+		pull.collect(function( err, result ){
+			t.deepEqual(result, [ 'Hidden string' ]);
+		})
+	);
+})
