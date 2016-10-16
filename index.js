@@ -1,8 +1,8 @@
 'use strict';
 
-const COMMA = 0x2c;
-const BRACKET_START = 0x5b;
-const BRACKET_END = 0x5d;
+var COMMA = 0x2c;
+var BRACKET_START = 0x5b;
+var BRACKET_END = 0x5d;
 
 module.exports = parse;
 
