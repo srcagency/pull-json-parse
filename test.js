@@ -8,32 +8,34 @@ var parse = require('./');
 var a = [ 'first', 'second', 'third', 'fourth', 'fifth', 'sixth' ];
 var c = [ { name: 'Juliet', age: 22 }, { name: 'Romeo', age: 23 } ];
 
-[
-	[ '"first"\n|"second"\n|"third"\n|"fourth"\n|"fifth"\n|"sixth"\n', a ],
-	[ '"fi||rs|t"|\n|"second"|\n"third|"|\n"fourth"\n"fifth"\n"s|ixth"\n', a ],
-	[ '"first"\n"second"\n"third"\n"fourth"\n"fifth"\n"sixth"', a ],
-	[ '"first",\n"second",\n"third",\n"fourth",\n"fifth",\n"sixth",', a ],
-	[ '"first",\n"second",\n"third",\n"fourth",\n"fifth",\n"sixth",\n', a ],
-	[ '[\n"first",\n"second",\n"third",\n"fourth",\n"fifth",\n"sixth",\n]', a ],
-	[ '[\n"first",\n"second",\n"third",\n"fourth",\n"fifth",\n"sixth",\n]\n', a ],
-	[ '[|\n|"first",\n"second",\n"third",\n"fourth",\n"fifth",\n"sixth"|\n]', a ],
-	[ '[\n|"first",\n"second",\n"third",\n"fourth",\n"fifth",\n"sixth"\n|]', a ],
-	[ '[\n{"name":"Juliet","age":22},\n{"name":"Romeo","age":23}\n]', c ],
-	[ '[\n{"name|":|"Juliet",|"age"|:|2|2}|,|\n|{"name":"Ro|meo"|,"age"|:23}\n]', c ],
-	[ '{"name":"Juliet","age":22}\n{"name":"Romeo","age":23}', c ],
-	[ 'true', [ true ] ],
-	[ '"ping"', [ 'ping' ] ],
-].forEach(function( set ){
-	test(function( t ){
-		t.plan(1);
+test(function( t ){
+	[
+		[ '"first"\n|"second"\n|"third"\n|"fourth"\n|"fifth"\n|"sixth"\n', a ],
+		[ '"fi||rs|t"|\n|"second"|\n"third|"|\n"fourth"\n"fifth"\n"s|ixth"\n', a ],
+		[ '"first"\n"second"\n"third"\n"fourth"\n"fifth"\n"sixth"', a ],
+		[ '"first",\n"second",\n"third",\n"fourth",\n"fifth",\n"sixth",', a ],
+		[ '"first",\n"second",\n"third",\n"fourth",\n"fifth",\n"sixth",\n', a ],
+		[ '[\n"first",\n"second",\n"third",\n"fourth",\n"fifth",\n"sixth",\n]', a ],
+		[ '[\n"first",\n"second",\n"third",\n"fourth",\n"fifth",\n"sixth",\n]\n', a ],
+		[ '[|\n|"first",\n"second",\n"third",\n"fourth",\n"fifth",\n"sixth"|\n]', a ],
+		[ '[\n|"first",\n"second",\n"third",\n"fourth",\n"fifth",\n"sixth"\n|]', a ],
+		[ '[\n{"name":"Juliet","age":22},\n{"name":"Romeo","age":23}\n]', c ],
+		[ '[\n{"name|":|"Juliet",|"age"|:|2|2}|,|\n|{"name":"Ro|meo"|,"age"|:23}\n]', c ],
+		[ '{"name":"Juliet","age":22}\n{"name":"Romeo","age":23}', c ],
+		[ 'true', [ true ] ],
+		[ '"ping"', [ 'ping' ] ],
+	].forEach(function( set ){
+		t.test(function( t ){
+			t.plan(1);
 
-		pull(
-			pull.values(set[0].split('|')),
-			parse,
-			pull.collect(function( err, result ){
-				t.deepEqual(result, set[1]);
-			})
-		);
+			pull(
+				pull.values(set[0].split('|')),
+				parse(),
+				pull.collect(function( err, result ){
+					t.deepEqual(result, set[1]);
+				})
+			);
+		});
 	});
 });
 
@@ -42,9 +44,44 @@ test(function( t ){
 
 	pull(
 		pull.values([ new Buffer(JSON.stringify('Hidden string'), 'utf8') ]),
-		parse,
+		parse(),
 		pull.collect(function( err, result ){
 			t.deepEqual(result, [ 'Hidden string' ]);
 		})
 	);
+})
+
+
+test('Double newline delimited JSON', function( t ){
+	[
+		[ '"first"\n\n"second"|\n\n"third"\n\n|"fourth"\n|\n"fifth"|\n\n|"sixth"\n\n', a ],
+		[ '"first"|\n|\n|"second"\n\n|"third"\n\n|"fourth"\n\n|"fifth"\n\n|"sixth"\n\n', a ],
+		[ '"fi||rs|t"|\n\n|"second"|\n\n"third|"|\n\n"fourth"\n\n"fifth"\n\n"s|ixth"\n\n', a ],
+		[ '"first"\n\n"second"\n\n"third"\n\n"fourth"\n\n"fifth"\n\n"sixth"', a ],
+		[ '"first",\n\n"second",\n\n"third",\n\n"fourth",\n\n"fifth",\n\n"sixth",', a ],
+		[ '"first",\n\n"second",\n\n"third",\n\n"fourth",\n\n"fifth",\n\n"sixth",\n\n', a ],
+		[ '[\n\n"first",\n\n"second",\n\n"third",\n\n"fourth",\n\n"fifth",\n\n"sixth",\n\n]', a ],
+		[ '[\n\n"first",\n\n"second",\n\n"third",\n\n"fourth",\n\n"fifth",\n\n"sixth",\n\n]\n\n', a ],
+		[ '[|\n\n|"first",\n\n"second",\n\n"third",\n\n"fourth",\n\n"fifth",\n\n"sixth"|\n\n]', a ],
+		[ '[\n\n|"first",\n\n"second",\n\n"third",\n\n"fourth",\n\n"fifth",\n\n"sixth"\n\n|]', a ],
+		[ '[\n\n{"name":"Juliet","age":22},\n\n{"name":"Romeo","age":23}\n\n]', c ],
+		[ '[\n\n{"name|":|"Juliet",|"age"|:|2|2}|,|\n\n|{"name":"Ro|meo"|,"age"|:23}\n\n]', c ],
+		[ '{"name":"Juliet","age":22}\n\n{"name":"Romeo","age":23}', c ],
+		[ 'true', [ true ] ],
+		[ '"ping"', [ 'ping' ] ],
+	].forEach(function( set ){
+		t.test(function( t ){
+			t.plan(1);
+
+			pull(
+				pull.values(set[0].split('|')),
+				parse({
+					separator: '\n\n',
+				}),
+				pull.collect(function( err, result ){
+					t.deepEqual(result, set[1]);
+				})
+			);
+		});
+	});
 })

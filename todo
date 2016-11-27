@@ -1,0 +1,2 @@
+Get rid of the `head` variable in the parser somehow - it's only used for
+backtracking.
