@@ -23,6 +23,10 @@ var c = [ { name: 'Juliet', age: 22 }, { name: 'Romeo', age: 23 } ];
 	[ '{"name":"Juliet","age":22}\n{"name":"Romeo","age":23}', c ],
 	[ 'true', [ true ] ],
 	[ '"ping"', [ 'ping' ] ],
+	[ '[\n]', [] ],
+	[ '[\n\n]', [] ],
+	[ '[\ntrue\n\n]', [ true ] ],
+	[ '[\n|\ntrue\n|\n|\n\n|\n]', [ true ] ],
 ].forEach(function( set ){
 	test(function( t ){
 		t.plan(1);

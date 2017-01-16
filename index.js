@@ -3,6 +3,7 @@
 var COMMA = 0x2c;
 var BRACKET_START = 0x5b;
 var BRACKET_END = 0x5d;
+var NEWLINE = 0xa;
 
 module.exports = parse;
 
@@ -14,6 +15,8 @@ function parse( read ){
 	var head = '';
 	var tail = '';
 	var line = '';
+	var cc = 0;
+	var ll = 0;
 
 	return function again( abort, cb ){
 		if (abort)
@@ -55,8 +58,19 @@ function parse( read ){
 
 				pos = ni + 1;
 
-				if (line.length === 1 && (line.charCodeAt(0) === BRACKET_START || line.charCodeAt(0) === BRACKET_END))
+				ll = line.length;
+
+				if (ll === 0)
 					continue;
+
+				if (ll === 1) {
+					cc = line.charCodeAt(0);
+
+					if (cc === BRACKET_START
+						|| cc === BRACKET_END
+						|| cc === NEWLINE)
+						continue;
+				}
 
 				queue.push(JSON.parse(line));
 			}
