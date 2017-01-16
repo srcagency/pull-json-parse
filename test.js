@@ -51,4 +51,4 @@ test(function( t ){
 			t.deepEqual(result, [ 'Hidden string' ]);
 		})
 	);
-})
+});
