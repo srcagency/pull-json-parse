@@ -1,7 +1,7 @@
 {
 	"name": "pull-json-parse",
 	"description": "Parse a pull-stream with newline delimited JSON",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"repository": "srcagency/pull-json-parse",
 	"scripts": {
 		"test": "node test"
